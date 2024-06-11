@@ -1,4 +1,7 @@
-export default function PolygonOrdersAndDeliveryMan() {
+type Props = {
+  polygon: IPolygon;
+};
+export default function PolygonOrdersAndDeliveryMan({ polygon }: Props) {
   return (
     <div className="">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">

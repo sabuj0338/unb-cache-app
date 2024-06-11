@@ -6,21 +6,12 @@ import "../styles/globals.css";
 
 const queryClient = new QueryClient();
 
-function MyApp({
-  Component,
-  pageProps,
-}: AppProps
-// <{
-//   session: Session;
-// }>
-) {
+function MyApp({ Component, pageProps }: AppProps) {
   return (
-    // <SessionProvider session={pageProps.session}>
-      <QueryClientProvider client={queryClient}>
-        <Component {...pageProps} />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    // </SessionProvider>
+    <QueryClientProvider client={queryClient}>
+      <Component {...pageProps} />
+      <ReactQueryDevtools initialIsOpen={false} />
+    </QueryClientProvider>
   );
 }
 

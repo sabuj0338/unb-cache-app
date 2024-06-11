@@ -6,35 +6,42 @@ import {
   Polygon,
   useJsApiLoader,
 } from "@react-google-maps/api";
-import { useState } from "react";
 import Loader from "./loader";
 
 // const libraries: Library[] = ["places", "drawing", "geometry", "visualization"];
 const libraries: Library[] = ["places"];
 
+const GOOGLE_MAP_API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY ?? "";
+
 type Props = {
   config: IMapConfig;
+  selectedPolygonList: IPolygon[];
+  setSelectedPolygonList: (p: IPolygon[]) => void;
 };
 
-export default function MyGoogleMap({ config }: Props) {
+export default function MyGoogleMap({
+  config,
+  selectedPolygonList,
+  setSelectedPolygonList,
+}: Props) {
   const centerPoint = {
     lat: +config.polygonSettings.lat,
     lng: +config.polygonSettings.lng,
   };
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: "AIzaSyClMirnfPB4ntNp8BbCOFtN1t6a_vMpHFs",
+    googleMapsApiKey: GOOGLE_MAP_API_KEY,
     libraries,
   });
 
-  const [selectedP, setSelectedP] = useState<number[]>([]);
-
-  const handleClickPolygon = (polygonId: number) => {
-    const filter = selectedP.filter((id) => id != polygonId);
-    if (selectedP.includes(polygonId)) {
-      setSelectedP([...filter]);
+  const handleClickPolygon = (polygon: IPolygon) => {
+    const filter = selectedPolygonList.filter(
+      (p) => p.polygonId != polygon.polygonId
+    );
+    if (selectedPolygonList.find((p) => p.polygonId == polygon.polygonId)) {
+      setSelectedPolygonList([...filter]);
     } else {
-      setSelectedP([...selectedP, polygonId]);
+      setSelectedPolygonList([...selectedPolygonList, polygon]);
     }
   };
 
@@ -70,13 +77,15 @@ export default function MyGoogleMap({ config }: Props) {
       {config.polygonsList.map((polygonItem: IPolygon) => (
         <Polygon
           paths={polygonItem.coordinates}
-          onClick={() => handleClickPolygon(polygonItem.polygonId)}
+          onClick={() => handleClickPolygon(polygonItem)}
           key={polygonItem.polygonId}
           options={{
             clickable: true,
             draggable: false,
             editable: false,
-            fillColor: selectedP.includes(polygonItem.polygonId)
+            fillColor: selectedPolygonList.find(
+              (p) => p.polygonId == polygonItem.polygonId
+            )
               ? "#4285F4"
               : "#ADFF2F",
             fillOpacity: 0.5,

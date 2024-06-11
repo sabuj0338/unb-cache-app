@@ -1,9 +1,39 @@
 import { useState } from "react";
+import Loader from "./loader";
 
-export default function MapSettings() {
+type Props = {
+  callback: () => void;
+};
+
+export default function MapSettings({ callback }: Props) {
   const [circleCount, setCircleCount] = useState(0);
   const [spilitCount, setSpilitCount] = useState(0);
   const [angle, setAngle] = useState(0);
+
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    try {
+      const body = {
+        circleCount,
+        spilitCount,
+        angle,
+      }
+
+      const res = await fetch(`http://127.0.0.1:8000/api/v1/mapapi/config`, {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+
+      if (!res.ok) throw new Error("failed to save map settings.");
+      
+      await callback();
+
+    } catch (_) {}
+    setLoading(false);
+  };
+
   return (
     <div className="my-2 p-4 bg-white shadow-sm">
       <div className="flex flex-wrap justify-between">
@@ -43,8 +73,10 @@ export default function MapSettings() {
         <button
           type="button"
           className="text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center"
+          onClick={handleSubmit}
+          disabled={loading}
         >
-          Save
+          {loading ? <Loader /> : "Save"}
         </button>
       </div>
     </div>

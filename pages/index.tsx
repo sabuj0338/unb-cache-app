@@ -1,7 +1,5 @@
 import NailMall from "../components/nailmall";
 
-const Home = () => {
-  return <NailMall/>;
-};
-
-export default Home;
+export default function Home() {
+  return <NailMall />;
+}

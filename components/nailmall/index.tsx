@@ -1,12 +1,11 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
-import ArrowBack from "./ArrowBack";
-import ArrowNext from "./ArrowNext";
 import ResizableDiv from "./ResizeableDiv";
+import CustomSlider from "./custom-slider";
 import Loader from "./loader";
 import MapSettings from "./map-settings";
 import MyGoogleMap from "./my-google-map";
-import PolygonOrdersAndDeliveryMan from "./polygon-order-and-dman";
+import PolygonOrdersAndDeliveryMan from "./polygon-orders-and-delivery-man";
 
 async function getConfig(): Promise<IMapConfig | undefined> {
   try {
@@ -19,6 +18,10 @@ async function getConfig(): Promise<IMapConfig | undefined> {
 }
 
 export default function NailMall() {
+  const [selectedPolygonList, setSelectedPolygonList] = useState<IPolygon[]>(
+    []
+  );
+
   const query = useQuery({
     queryKey: ["map-config"],
     queryFn: getConfig,
@@ -26,62 +29,35 @@ export default function NailMall() {
     refetchOnWindowFocus: false,
   });
 
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const handleSelectPolygon = (list: IPolygon[]) =>
+    setSelectedPolygonList(list);
 
-  const handleScrollLeft = () => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollLeft -= sliderRef.current.offsetWidth / 1.5;
-    }
-  };
-
-  const handleScrollRight = () => {
-    if (sliderRef.current) {
-      sliderRef.current.scrollLeft += sliderRef.current.offsetWidth / 1.5;
-    }
-  };
+  if (query.isLoading) {
+    return (
+      <Loader className="min-h-screen h-full flex justify-center items-center" />
+    );
+  }
 
   return (
     <div className="min-h-screen h-full bg-gray-100">
-      {query.isLoading && (
-        <Loader className="min-h-screen h-full flex justify-center items-center" />
-      )}
       <ResizableDiv minHeight={200} initialHeight={500}>
-        {!query.isLoading && query.data && <MyGoogleMap config={query.data} />}
+        {query.data && (
+          <MyGoogleMap
+            config={query.data}
+            selectedPolygonList={selectedPolygonList}
+            setSelectedPolygonList={handleSelectPolygon}
+          />
+        )}
       </ResizableDiv>
 
-      <MapSettings />
+      <MapSettings callback={query.refetch}/>
 
       <div className="my-2 p-4">
-        <div className="relative w-full h-full">
-          <div className="absolute left-0 h-full flex items-center justify-start">
-            <button
-              type="button"
-              className="bg-gray-50 hover:bg-blue-500 hover:text-white text-primary-600 p-2 border rounded-full"
-              onClick={handleScrollLeft}
-            >
-              <ArrowBack classNames="w-6 h-6" />
-            </button>
-          </div>
-          <div className="absolute right-0 h-full flex items-center justify-start">
-            <button
-              type="button"
-              className="bg-gray-50 hover:bg-blue-500 hover:text-white text-primary-600 p-2 border rounded-full"
-              onClick={handleScrollRight}
-            >
-              <ArrowNext classNames="w-6 h-6" />
-            </button>
-          </div>
-          <div className="px-12">
-            <div
-              className="w-full flex flex-nowrap gap-5 overflow-x-auto scrollbar-hide scroll-smooth p-2 bg-gray-10"
-              ref={sliderRef}
-            >
-              <PolygonOrdersAndDeliveryMan />
-              <PolygonOrdersAndDeliveryMan />
-              <PolygonOrdersAndDeliveryMan />
-            </div>
-          </div>
-        </div>
+        <CustomSlider>
+          {selectedPolygonList.map((polygon: IPolygon) => (
+            <PolygonOrdersAndDeliveryMan polygon={polygon} key={polygon.polygonId}/>
+          ))}
+        </CustomSlider>
       </div>
 
       <br />
