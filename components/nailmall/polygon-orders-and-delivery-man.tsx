@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
+import DeleteIcon from "./DeleteIcon";
 
 async function getOrdersAndDeliveryMan(
   polygonId: number
@@ -17,9 +18,10 @@ async function getOrdersAndDeliveryMan(
 
 type Props = {
   polygon: IPolygon;
+  onDelete: (id: number) => void;
 };
 
-export default function PolygonOrdersAndDeliveryMan({ polygon }: Props) {
+export default function PolygonOrdersAndDeliveryMan({ polygon, onDelete }: Props) {
   // const [orders, setOrders] = useState<IOrder[]>([]);
   const [selectedOrderList, setSelectedOrderList] = useState<IOrder[]>([]);
   // const [selectedDManList, setSelectedDManList] = useState<IDeliveryMan[]>([]);
@@ -58,10 +60,18 @@ export default function PolygonOrdersAndDeliveryMan({ polygon }: Props) {
     // }
   };
 
-  console.log("selectedOrderList", selectedOrderList);
-
   return (
     <div className="">
+      <div className="bg-white p-3 border flex items-center justify-between">
+        <p>{polygon.name ?? polygon.polygonId}</p>
+        <button
+          type="button"
+          className="text-red-600 bg-red-50 hover:bg-red-100 focus:outline-none focus:ring-2 focus:ring-red-200 font-medium rounded-full text-sm px-2 py-2 text-center"
+          onClick={() => onDelete(polygon.polygonId)}
+        >
+          <DeleteIcon classNames="w-4 h-4" />
+        </button>
+      </div>
       <table className="w-full text-sm text-left rtl:text-right text-gray-500">
         <thead className="text-xs text-gray-700 uppercase bg-gray-50">
           <tr>

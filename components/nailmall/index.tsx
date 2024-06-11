@@ -32,33 +32,46 @@ export default function NailMall() {
   const handleSelectPolygon = (list: IPolygon[]) =>
     setSelectedPolygonList(list);
 
+  const handleRemovePolygon = (id: number) => {
+    const filter = selectedPolygonList.filter(p => p.polygonId != id)
+    setSelectedPolygonList([...filter]);
+  }
+
   if (query.isLoading) {
     return (
       <Loader className="min-h-screen h-full flex justify-center items-center" />
     );
   }
 
+  if (query.data == undefined) {
+    return <>Error</>;
+  }
+
   return (
     <div className="min-h-screen h-full bg-gray-100">
       <ResizableDiv minHeight={200} initialHeight={500}>
-        {query.data && (
-          <MyGoogleMap
-            config={query.data}
-            selectedPolygonList={selectedPolygonList}
-            setSelectedPolygonList={handleSelectPolygon}
-          />
-        )}
+        <MyGoogleMap
+          config={query.data}
+          selectedPolygonList={selectedPolygonList}
+          setSelectedPolygonList={handleSelectPolygon}
+        />
       </ResizableDiv>
 
-      <MapSettings callback={query.refetch}/>
+      <MapSettings callback={query.refetch} config={query.data} />
 
-      {!!selectedPolygonList.length && (<div className="my-2 p-4">
-        <CustomSlider>
-          {selectedPolygonList.map((polygon: IPolygon) => (
-            <PolygonOrdersAndDeliveryMan polygon={polygon} key={polygon.polygonId}/>
-          ))}
-        </CustomSlider>
-      </div>)}
+      {!!selectedPolygonList.length && (
+        <div className="my-2 p-4">
+          <CustomSlider>
+            {selectedPolygonList.map((polygon: IPolygon) => (
+              <PolygonOrdersAndDeliveryMan
+                polygon={polygon}
+                key={polygon.polygonId}
+                onDelete={handleRemovePolygon}
+              />
+            ))}
+          </CustomSlider>
+        </div>
+      )}
 
       <br />
       <br />
