@@ -52,13 +52,13 @@ export default function NailMall() {
 
       <MapSettings callback={query.refetch}/>
 
-      <div className="my-2 p-4">
+      {!!selectedPolygonList.length && (<div className="my-2 p-4">
         <CustomSlider>
           {selectedPolygonList.map((polygon: IPolygon) => (
             <PolygonOrdersAndDeliveryMan polygon={polygon} key={polygon.polygonId}/>
           ))}
         </CustomSlider>
-      </div>
+      </div>)}
 
       <br />
       <br />

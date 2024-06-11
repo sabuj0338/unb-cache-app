@@ -26,19 +26,19 @@ export default function CustomSlider({ children }: Props) {
       <div className="absolute left-0 h-full flex items-center justify-start">
         <button
           type="button"
-          className="bg-gray-50 hover:bg-blue-500 hover:text-white text-primary-600 p-2 border rounded-full"
+          className="bg-blue-200 shadow hover:bg-blue-500 hover:text-white text-primary-600 border border-blue-600 rounded-full"
           onClick={handleScrollLeft}
         >
-          <ArrowBack classNames="w-6 h-6" />
+          <ArrowBack classNames="w-8 h-8" />
         </button>
       </div>
       <div className="absolute right-0 h-full flex items-center justify-start">
         <button
           type="button"
-          className="bg-gray-50 hover:bg-blue-500 hover:text-white text-primary-600 p-2 border rounded-full"
+          className="bg-blue-200 shadow hover:bg-blue-500 hover:text-white text-primary-600 border border-blue-600 rounded-full"
           onClick={handleScrollRight}
         >
-          <ArrowNext classNames="w-6 h-6" />
+          <ArrowNext classNames="w-8 h-8" />
         </button>
       </div>
       <div className="px-12">

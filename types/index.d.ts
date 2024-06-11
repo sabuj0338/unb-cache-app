@@ -25,6 +25,7 @@ type IPolygon = {
 
 type IOrder = {
   id: number;
+  order_amount: number;
   shipping_address_data: {
     id: number;
     customer_id: string;
@@ -44,10 +45,15 @@ type IOrder = {
     longitude: string;
     is_billing: boolean;
   };
+  created_at: string;
 };
 
 type IDeliveryMan = {
   id: number;
+  f_name: string;
+  l_name: string;
+  phone: string;
+  email: string;
   latitude: number;
   longitude: number;
 };
@@ -58,3 +64,8 @@ type IMapConfig = {
   orders: IOrder[];
   deliveryManList: IDeliveryMan[];
 };
+
+type IOrderResponse = {
+  orders: IOrder[];
+  deliveryManList: IDeliveryMan[];
+}
